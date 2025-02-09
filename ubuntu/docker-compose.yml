@@ -1,0 +1,15 @@
+services:
+
+  builder:
+    image: ubuntu
+    hostname: ubuntu
+    build: ./builder
+    volumes:
+      - $HOME/ubuntu-docker/mnt:/home/alonsy
+    deploy:
+      resources:
+        reservations:
+          devices:
+              - driver: nvidia
+                device_ids: ['0']
+                capabilities: [compute, utility]

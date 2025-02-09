@@ -1,0 +1,9 @@
+# Temel CUDA imajı
+FROM nvidia/cuda:12.1.1-base-ubuntu22.04
+
+# Ollama'yı resmi script ile kur
+RUN apt-get update && apt-get install -y curl \
+    && curl -fsSL https://ollama.com/install.sh | sh
+
+# Ollama servisini başlat
+CMD ["ollama", "serve"]

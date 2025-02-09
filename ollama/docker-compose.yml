@@ -1,0 +1,51 @@
+services:
+    ollama:
+        build:
+            context: .
+            dockerfile: Dockerfile.ollama
+        image: ollama-docker
+        container_name: ollama
+        ports:
+            - "11434:11434"
+        volumes:
+            - ollama_data:/root/.ollama
+        environment:
+            - OLLAMA_HOST=http://0.0.0.0:11434
+        networks:
+            - ollama_network
+        deploy:
+            resources:
+                reservations:
+                    devices:
+                        - driver: nvidia
+                          count: all
+                          capabilities: [gpu]
+
+    webui:
+        build:
+            context: .
+            dockerfile: Dockerfile.webui
+        image: open-webui-docker
+        container_name: open-webui
+        ports:
+            - "8080:8080"
+        environment:
+            - OLLAMA_API_BASE_URL=http://ollama:11434
+        depends_on:
+            - ollama
+        networks:
+            - ollama_network
+        deploy:
+            resources:
+                reservations:
+                    devices:
+                        - driver: nvidia
+                          count: all
+                          capabilities: [gpu]
+
+volumes:
+    ollama_data:
+
+networks:
+    ollama_network:
+        driver: bridge
